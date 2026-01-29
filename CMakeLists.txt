@@ -222,6 +222,32 @@ install(FILES
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CudaBridge
 )
 
+# CUDA 호환 헤더 설치
+install(FILES src/cuda/runtime/cuda_runtime.h
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/cuda
+)
+
+# CPack 배포 패키징
+set(CPACK_PACKAGE_NAME "CudaBridge")
+set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
+set(CPACK_PACKAGE_VENDOR "CudaBridge Project")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
+    "CUDA support for Apple Silicon Macs via eGPU over USB4/Thunderbolt")
+set(CPACK_PACKAGE_CONTACT "https://github.com/KeyWaveTree/CudaBridge")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
+set(CPACK_SOURCE_IGNORE_FILES "/build/;/dist/;/\\\\.git/;\\\\.gitignore")
+
+if(APPLE)
+    set(CPACK_GENERATOR "TGZ")
+else()
+    set(CPACK_GENERATOR "TGZ;DEB")
+    set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.17)")
+    set(CPACK_DEBIAN_PACKAGE_SECTION "libs")
+endif()
+
+include(CPack)
+
 # 요약 출력
 message(STATUS "")
 message(STATUS "CudaBridge ${PROJECT_VERSION} Configuration:")
